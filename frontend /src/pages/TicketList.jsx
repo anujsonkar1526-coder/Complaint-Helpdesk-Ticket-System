@@ -1,0 +1,56 @@
+import React, { useEffect, useState } from "react";
+import { getTickets } from "../controllers/ticketController.js";
+import { arrayFrom } from "../controllers/api.js";
+
+export default function TicketList({ onOpen, onCreate }) {
+    const [items, setItems] = useState([]);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    async function load() {
+        setLoading(true);
+        setError("");
+        try {
+            setItems(arrayFrom(await getTickets(), "tickets"))
+        }
+        catch (e) {
+            setError(e.message)
+        }
+        finally { setLoading(false) }
+    }
+
+    useEffect(() => { load() }, []);
+
+    return <section>
+
+        <div className="heading"><div>
+
+            <p className="eyebrow">WORKSPACE</p>
+ <h1>Support tickets</h1>
+            <p className="muted">Track your support requests.</p>
+
+        </div><button className="primary" onClick={onCreate}>+ New ticket</button>
+
+        </div>{error && <div className="errorbox">
+            <p>{error}</p>
+        <button onClick={load}>Try again</button>
+            
+        </div>}{loading ? <p className="muted">Loading…</p>
+
+            : !error && items.length === 0 ? <div className="card empty">
+                       <h3>No tickets yet</h3>
+                <button className="primary" onClick={onCreate}>Create ticket</button>
+            </div>
+                : <div className="grid">{items.map((t, i) =>
+
+                    <button className="ticket card" key={t._id || t.id || i}onClick={() => onOpen(t._id || t.id)}>
+                        <span className="pill">{t.status || "Open"}</span>
+
+                        <h3>{t.title || t.subject || "Untitled ticket"}</h3>
+
+                        <p className="muted">{t.description || "No description"}</p>
+                        
+                        <small>Priority: {t.priority || "Normal"}</small></button>)}
+                </div>}
+    </section>
+}

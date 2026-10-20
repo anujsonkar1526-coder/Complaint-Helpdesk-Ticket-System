@@ -1,0 +1,26 @@
+{
+  "name": "ps8-helpdesk",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node data.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "description": "1. Run `npm install`. 2. Copy `.env.example` to `.env`. 3. Put your MongoDB Atlas connection string in `MONGO_URI`. 4. Change `JWT_SECRET` to a private secret. 5. Run `npm run seed` to add sample records. 6. Run `npm run dev`.",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

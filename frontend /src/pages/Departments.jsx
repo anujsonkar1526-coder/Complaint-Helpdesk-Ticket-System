@@ -1,0 +1,32 @@
+import React,{useEffect,useState} from "react";
+import {getDepartments} from "../controllers/departmentController.js";
+import {arrayFrom} from "../controllers/api.js";
+
+export default function Departments(){
+    const [items,setItems]=useState([]);
+    const [error,setError]=useState("");
+
+    useEffect(()=>{getDepartments()
+
+        .then(r=>setItems(arrayFrom(r,"departments")))
+
+        .catch(e=>setError(e.message))},[]);
+        return <section>
+
+            <p className="eyebrow">ORGANIZATION</p>
+  <h1>Departments</h1>{error&&<p className="error">{error}</p>}
+
+            {
+            !error&&items.length===0&&<p className="muted">No departments returned by the API.</p>
+            }
+
+            <div className="grid">{items.map((d,i)=><article className="card" key={d._id||d.id||i}>
+
+       <h3>{d.name||d.title||"Department"}</h3>
+
+                <p className="muted">{d.description||"Support team"}</p>
+
+                </article>)
+                }
+                </div>
+ </section>}

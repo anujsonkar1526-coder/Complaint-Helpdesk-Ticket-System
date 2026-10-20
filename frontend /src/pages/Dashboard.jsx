@@ -1,0 +1,42 @@
+import React,{useEffect,useState} from "react";
+import {getDashboard} from "../controllers/dashboardController.js";
+
+
+export default function Dashboard(){
+    const [data,setData]=useState(null);
+    const [error,setError]=useState("");
+    useEffect(()=>{
+        getDashboard().then(r=>setData(r.data||r.dashboard||r))
+
+        .catch(e=>setError(e.message))},[]);
+        return <section>
+            
+            <p className="eyebrow">OVERVIEW</p>
+            <h1>Dashboard</h1>
+            {
+            error&&<p className="error">{error}</p>
+            }
+
+            {
+            !data&&!error&&<p className="muted">Loading…</p>
+            }
+
+            {
+            data&&<div className="grid">{
+            Object.entries(data).filter(([,v])=>
+                   
+                ["string","number"].includes(typeof v))
+
+                .map(([k,v])=><article className="card stat" key={k}>
+                    
+                    <p className="muted">{k.replace(/_/g," ")}</p>
+                    <strong>{v}</strong></article>)
+                    }</div>
+                    }
+                    {
+                    data&&<details>
+                        <summary>Raw API response</summary>
+                        <pre>{JSON.stringify(data,null,2)}</pre>
+                        </details>
+                        }
+                        </section>}

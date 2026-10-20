@@ -1,0 +1,84 @@
+import React, { useState } from "react";
+import Login from "./pages/Login.jsx"; 
+import Register from "./pages/Register.jsx"; 
+import TicketList from "./pages/TicketList.jsx";
+ import TicketForm from "./pages/TicketForm.jsx";
+  import TicketDetails from "./pages/TicketDetails.jsx"; 
+  import Dashboard from "./pages/Dashboard.jsx"; 
+  import Departments from "./pages/Departments.jsx"; 
+  import { clearSession } from "./controllers/api.js";
+
+
+
+function readUser() { 
+    try { 
+        
+        return JSON.parse(localStorage.getItem("user") || "null") 
+    } catch { return null } 
+}
+
+export default function App() { 
+
+    const [user, setUser] = useState(readUser); 
+    const [page, setPage] = useState(readUser() ? "tickets" : "login"); 
+     const [ticketId, setTicketId] = useState(""); 
+
+
+    function login(u) { setUser(u); 
+
+        localStorage.setItem("user", JSON.stringify(u));
+
+         setPage("tickets") } function logout() { clearSession(); 
+
+            setUser(null); setPage("login")
+         } 
+            const staff = ["admin", "agent", "support"].includes(String(user?.role || "").toLowerCase()); 
+            
+            return <div className="shell">
+                
+                <header>
+
+                <button className="brand" onClick={() => setPage(user ? "tickets" : "login")}>Helpdesk<span> ●</span></button>
+
+                {
+                user && <nav><button onClick={() => setPage("tickets")}>Tickets</button>
+
+
+                <button onClick={() => setPage("new")}>New ticket</button>
+
+
+                {
+                staff && <><button onClick={() => setPage("dashboard")}>Dashboard</button>
+
+                <button onClick={() => setPage("departments")}>Departments</button>
+
+                </>}
+                
+                <span>{user.name || user.email}</span>
+                
+            <button onClick={logout}>Logout</button></nav>}
+            </header>
+
+                <main>{
+                !user && page === "login" && <Login onLogin={login} onRegister={() => setPage("register")} 
+                />}
+                    {
+                    !user && page === "register" && <Register onBack={() => setPage("login")} 
+                    />}
+                        {
+                        
+                        user && page === "tickets" && <TicketList onOpen={id => { setTicketId(id); setPage("details") 
+
+                        }} onCreate={() => setPage("new")} 
+                        />}
+                            {
+                            user && page === "new" && <TicketForm onCancel={() => setPage("tickets")} onSuccess={() => setPage("tickets")} 
+                            />}
+                                {
+                                user && page === "details" && <TicketDetails id={ticketId} onBack={() => setPage("tickets")}
+                                 />}
+                                    {
+                                    user && page === "dashboard" && <Dashboard />}{user && page === "departments" && <Departments />}
+                                    
+                                    </main>
+            <footer>Helpdesk · Ticket management</footer></div> }
