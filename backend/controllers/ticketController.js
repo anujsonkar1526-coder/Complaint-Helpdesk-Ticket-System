@@ -3,11 +3,22 @@ const Comment = require("../models/Comment");
 
 exports.createTicket = async (req, res) => {
     try {
+        let priority = "Medium";
+        if (req.body.priority) {
+            const p = String(req.body.priority).trim();
+            priority = p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+            if (!["Low", "Medium", "High"].includes(priority)) priority = "Medium";
+        }
+
+        const validCategories = ["Technical", "Billing", "Account", "Delivery", "Other"];
+        let category = req.body.category || "Technical";
+        if (!validCategories.includes(category)) category = "Technical";
+
         const ticket = await Ticket.create({
             ticketId: "TKT-" + Date.now(),
             title: req.body.title,
-            category: req.body.category,
-            priority: req.body.priority || "Medium",
+            category: category,
+            priority: priority,
             description: req.body.description || "",
             screenshotUrl: req.body.screenshotUrl || "",
             customer: req.user._id

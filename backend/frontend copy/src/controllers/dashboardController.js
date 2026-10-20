@@ -1,2 +1,0 @@
-import {request} from "./api.js";
-export const getDashboard=()=>request("/admin/dashboard");

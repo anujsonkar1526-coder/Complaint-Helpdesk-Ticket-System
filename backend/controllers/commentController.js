@@ -3,7 +3,14 @@ const Ticket = require("../models/Ticket");
 
 exports.addComment = async (req, res) => {
     try {
-        const ticket = await Ticket.findById(req.body.ticketId);
+        const ticketId = req.body.ticketId || req.params.ticketId || req.params.id;
+        const message = req.body.message || req.body.text || req.body.comment;
+
+        if (!message) {
+            return res.status(400).json({ message: "Message is required" });
+        }
+
+        const ticket = await Ticket.findById(ticketId);
         if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
         if (req.user.role === "customer" && ticket.customer.toString() !== req.user._id.toString()) {
@@ -16,7 +23,7 @@ exports.addComment = async (req, res) => {
         const comment = await Comment.create({
             ticket: ticket._id,
             author: req.user._id,
-            message: req.body.message
+            message: message
         });
         res.status(201).json(comment);
     } catch (error) {
