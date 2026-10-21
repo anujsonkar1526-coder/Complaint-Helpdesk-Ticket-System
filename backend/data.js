@@ -11,7 +11,7 @@ async function addData() {
     try {
         await connectDB();
 
-        // Warning: this clears these collections before adding demo records.
+        
         await Comment.deleteMany({});
         await Ticket.deleteMany({});
         await Department.deleteMany({});

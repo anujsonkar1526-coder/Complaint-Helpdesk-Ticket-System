@@ -6,7 +6,7 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// Enable CORS for all origins, supporting credentials and Vercel domains
+
 app.use(cors({
     origin: (origin, callback) => callback(null, true),
     credentials: true,
@@ -15,7 +15,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Root and Health check endpoints
+
 app.get("/", (req, res) => {
     res.json({
         message: "Helpdesk API is working",
@@ -28,14 +28,14 @@ app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok" });
 });
 
-// Primary API routes
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tickets", require("./routes/ticketRoutes"));
 app.use("/api/departments", require("./routes/departmentRoutes"));
 app.use("/api/comments", require("./routes/commentRoutes"));
 app.use("/api/admin/dashboard", require("./routes/dashboardRoutes"));
 
-// Route aliases to ensure frontend backwards compatibility
+
 app.use("/api/admin/tickets", require("./routes/ticketRoutes"));
 app.use("/api/admin/departments", require("./routes/departmentRoutes"));
 
